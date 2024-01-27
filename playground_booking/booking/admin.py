@@ -2,7 +2,7 @@ from django.contrib import admin
 from .models import CustomUser, Playground, Booking
 
 class CustomUserAdmin(admin.ModelAdmin):
-    list_display = ('id', 'username', 'role', 'is_active', 'created_date')
+    list_display = ('id', 'username', 'is_creator', 'is_booker', 'is_active', 'created_date')
     search_fields = ('first_name', 'last_name')
     ordering = ('-created_date',)
     

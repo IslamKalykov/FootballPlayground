@@ -1,17 +1,16 @@
 from django.db import models
 from django.contrib.auth.models import AbstractUser, Group, Permission
 from django.utils import timezone
+from django.core.exceptions import ValidationError
+
 
 class CustomUser(AbstractUser):
-    ROLES = (
-        ('user', 'User'),
-        ('admin', 'Admin'),
-    )
     groups = models.ManyToManyField(Group, related_name='custom_user_groups')
     user_permissions = models.ManyToManyField(
         Permission, related_name='custom_user_groups')
     phone_number = models.CharField(max_length=15, blank=False)
-    role = models.CharField(max_length=10, choices=ROLES, default='user')
+    is_creator = models.BooleanField(default=False)
+    is_booker = models.BooleanField(default=True)
     is_active = models.BooleanField(default=True)
     image = models.ImageField(
         upload_to='images/user_images/', null=True, blank=True)
@@ -29,8 +28,8 @@ class Playground(models.Model):
     address = models.CharField(max_length=100, blank=False, null=True)
     phone_number = models.CharField(max_length=15, blank=False, null=True)
     price = models.FloatField(default=0, blank=False)
-    width = models.FloatField(blank=False, null=True)
-    height = models.FloatField(blank=False, null=True)
+    width = models.IntegerField(blank=False, null=True)
+    height = models.IntegerField(blank=False, null=True)
     reservation_status = models.BooleanField(default=False)
     is_active = models.BooleanField(default=True)
     image = models.ImageField(
@@ -50,9 +49,10 @@ class Booking(models.Model):
     is_confirmed = models.BooleanField(default=False)
     admin_status = models.CharField(max_length=15, choices=(
         ('pending', 'Pending'), ('approved', 'Approved'), ('rejected', 'Rejected')), default='pending')
-    total_price = models.FloatField(blank=False)
+    total_price = models.IntegerField(blank=True)
     created_date = models.DateTimeField(default=timezone.now)
     updated_date = models.DateTimeField(default=timezone.now)
 
     def __str__(self):
         return f'{self.user.username} - {self.playground.name} - {self.id}'
+    
