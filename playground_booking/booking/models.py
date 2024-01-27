@@ -2,7 +2,6 @@ from django.db import models
 from django.contrib.auth.models import AbstractUser, Group, Permission
 from django.utils import timezone
 
-
 class CustomUser(AbstractUser):
     ROLES = (
         ('user', 'User'),
@@ -29,8 +28,6 @@ class Playground(models.Model):
     admin = models.ForeignKey(CustomUser, on_delete=models.CASCADE)
     address = models.CharField(max_length=100, blank=False, null=True)
     phone_number = models.CharField(max_length=15, blank=False, null=True)
-    bookings = models.ForeignKey('Booking', null=True, blank=True,
-                                 on_delete=models.CASCADE, related_name='playground_bookings')
     price = models.FloatField(default=0, blank=False)
     width = models.FloatField(blank=False, null=True)
     height = models.FloatField(blank=False, null=True)
@@ -53,7 +50,7 @@ class Booking(models.Model):
     is_confirmed = models.BooleanField(default=False)
     admin_status = models.CharField(max_length=15, choices=(
         ('pending', 'Pending'), ('approved', 'Approved'), ('rejected', 'Rejected')), default='pending')
-    total_price = models.FloatField(default=0, blank=False)
+    total_price = models.FloatField(blank=False)
     created_date = models.DateTimeField(default=timezone.now)
     updated_date = models.DateTimeField(default=timezone.now)
 

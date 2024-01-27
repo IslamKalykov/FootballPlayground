@@ -24,6 +24,16 @@ class BookingAdmin(admin.ModelAdmin):
     search_fields = ('playground__name', 'user__username', 'start_datetime', 'end_datetime')
     list_filter = ('is_confirmed', 'admin_status')
     ordering = ('-created_date',)
+    actions = ['approve_selected_bookings', 'reject_selected_bookings', 'pending_selected_bookings']
 
+    def approve_selected_bookings(modeladmin, request, queryset):
+        queryset.update(admin_status='approved', is_confirmed=True)
+
+    def reject_selected_bookings(modeladmin, request, queryset):
+        queryset.update(admin_status='rejected', is_confirmed=False)
+        
+    def pending_selected_bookings(modeladmin, request, queryset):
+        queryset.update(admin_status='pending', is_confirmed=False)
+        
 # Регистрируем модель Booking с кастомным классом в админ-панели
 admin.site.register(Booking, BookingAdmin)
